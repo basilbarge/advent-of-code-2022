@@ -16,7 +16,27 @@ fn main() {
         calorie_count.push(single_calories);
     }
 
-    let  Some((i , max)) = calorie_count.iter().enumerate().max_by(|&(_, item)| item);
+    let mut max = calorie_count.iter().max().unwrap();
+    let mut index = calorie_count.iter().position(|&r| &r == max).unwrap();
 
-    println!("Largest calorie count: {max}");    
+    println!("Largest calorie count: {max} at {index}");    
+
+    let mut top_3: [u32;3] = [0;3];
+
+    top_3[0] = calorie_count.swap_remove(index); 
+
+    max = calorie_count.iter().max().unwrap();
+    index = calorie_count.iter().position(|&r| &r == max).unwrap();
+
+    top_3[1] = calorie_count.swap_remove(index); 
+
+    max = calorie_count.iter().max().unwrap();
+    index = calorie_count.iter().position(|&r| &r == max).unwrap();
+
+    top_3[2] = calorie_count.swap_remove(index); 
+
+    let top_3_total: u32 = top_3.iter().sum();
+
+    println!("Total of top 3 Elves: {top_3_total}");
 }
+
