@@ -12,33 +12,43 @@ struct Round {
 
 impl Round {
     fn determine_outcome(&self) -> Outcome {
-        match self.player_move {
-            Rock => match self.opponent_move {
-                Rock => Outcome::Draw,
-                Paper => Outcome::Lose,
-                Scissors => Outcome::Win
+        match &self.player_move {
+            Move::Rock => match &self.opponent_move {
+                Move::Rock => Outcome::Draw,
+                Move::Paper => Outcome::Lose,
+                Move::Scissors => Outcome::Win
 
             },
-            Paper =>  match self.opponent_move {
-                Rock => Outcome::Win,
-                Paper => Outcome::Draw,
-                Scissors => Outcome::Lose
+            Move::Paper =>  match &self.opponent_move {
+                Move::Rock => Outcome::Win,
+                Move::Paper => Outcome::Draw,
+                Move::Scissors => Outcome::Lose
 
             },
-            Scissors => match self.opponent_move {
-                Rock => Outcome::Lose,
-                Paper => Outcome::Win,
-                Scissors => Outcome::Draw
+            Move::Scissors => match &self.opponent_move {
+                Move::Rock => Outcome::Lose,
+                Move::Paper => Outcome::Win,
+                Move::Scissors => Outcome::Draw
             }
 
         }
     }
 
     fn calculate_score(&self, result: Outcome) -> u32 {
-        let sum = 0;
-        match self.player_move {
-            todo!("Implement logic")
+        let mut sum = 0;
+        match &self.player_move {
+            Move::Rock => sum += 1,
+            Move::Paper => sum += 2,
+            Move::Scissors => sum += 3,
         }
+
+        match result {
+            Outcome::Lose => sum += 0,
+            Outcome::Draw => sum += 3,
+            Outcome::Win => sum += 6
+        }
+
+        sum
     }
 }
 
@@ -97,89 +107,7 @@ fn main() {
         rounds.push(r);
     }
 
-    let mut score: u32 = 0;
-    round_outcome.iter().enumerate().for_each(|(i, round_move)| {
-        // both players choose rock
-        if *round_move == 'x' && *opponent_move.get(i).unwrap() == 'a' {
-            rounds.push(Round {
-                player_move: Move::Rock,
-                opponent_move: Move::Rock,
-                outcome: Outcome::Draw
-            });
-        }
-        // Both players chose Paper
-        if *round_move == 'Y' && *opponent_move.get(i).unwrap() == 'B' {
-            rounds.push(Round {
-                player_move: Move::Paper,
-                opponent_move: Move::Paper,
-                outcome: Outcome::Draw
-            });
-        }
-        // Both players chose scissors
-        if *round_move == 'Z' && *opponent_move.get(i).unwrap() == 'C' {
-            rounds.push(Round {
-                player_move: Move::Scissors,
-                opponent_move: Move::Scissors,
-                outcome: Outcome::Draw
-            });
-            score += DRAW + SCISSORS;
-        }
-        // I chose rock, oppenent chose paper
-        if *round_move == 'X' && *opponent_move.get(i).unwrap() == 'B' {
-            rounds.push(Round {
-                player_move: Move::Scissors,
-                opponent_move: Move::Scissors,
-                outcome: Outcome::Draw
-            });
-            score += LOST + ROCK;
-        }
-        // I chose rock, opponent chose scissors
-        if *round_move == 'X' && *opponent_move.get(i).unwrap() == 'C' {
-            rounds.push(Round {
-                player_move: Move::Scissors,
-                opponent_move: Move::Scissors,
-                outcome: Outcome::Draw
-            });
-            score += WIN + ROCK;
-        }
-        // I chose paper, opponent chose rock
-        if *round_move == 'Y' && *opponent_move.get(i).unwrap() == 'A' {
-            rounds.push(Round {
-                player_move: Move::Scissors,
-                opponent_move: Move::Scissors,
-                outcome: Outcome::Draw
-            });
-            score += WIN + PAPER;
-        }
-        // I chose paper, opponent chose scissors
-        if *round_move == 'Y' && *opponent_move.get(i).unwrap() == 'C' {
-            rounds.push(Round {
-                player_move: Move::Scissors,
-                opponent_move: Move::Scissors,
-                outcome: Outcome::Draw
-            });
-            score += LOST + PAPER;
-        }
-        // I chose scissors, opponent chose rock
-        if *round_move == 'Z' && *opponent_move.get(i).unwrap() == 'A' {
-            rounds.push(Round {
-                player_move: Move::Scissors,
-                opponent_move: Move::Scissors,
-                outcome: Outcome::Draw
-            });
-            score += LOST + SCISSORS;
-        }
-        // I chose scissors, opponent chose paper
-        if *round_move == 'Z' && *opponent_move.get(i).unwrap() == 'B' {
-            rounds.push(Round {
-                player_move: Move::Scissors,
-                opponent_move: Move::Scissors,
-                outcome: Outcome::Draw
-            });
-            score += WIN + SCISSORS;
-        }
-    });
-
+    let score: u32 = rounds.iter().map(|r| r.calculate_score(r.determine_outcome())).sum();
 
     println!("Following the strategy guide, I get a score of: {score}");
 
