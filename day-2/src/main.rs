@@ -8,7 +8,38 @@ const WIN: u32 = 6;
 struct Round {
     player_move: Move,
     opponent_move: Move,
-    outcome: Outcome,
+}
+
+impl Round {
+    fn determine_outcome(&self) -> Outcome {
+        match self.player_move {
+            Rock => match self.opponent_move {
+                Rock => Outcome::Draw,
+                Paper => Outcome::Lose,
+                Scissors => Outcome::Win
+
+            },
+            Paper =>  match self.opponent_move {
+                Rock => Outcome::Win,
+                Paper => Outcome::Draw,
+                Scissors => Outcome::Lose
+
+            },
+            Scissors => match self.opponent_move {
+                Rock => Outcome::Lose,
+                Paper => Outcome::Win,
+                Scissors => Outcome::Draw
+            }
+
+        }
+    }
+
+    fn calculate_score(&self, result: Outcome) -> u32 {
+        let sum = 0;
+        match self.player_move {
+            todo!("Implement logic")
+        }
+    }
 }
 
 enum Move {
@@ -33,30 +64,37 @@ fn main() {
 
     for play in playbook {
         let round: Vec<&str> = play.split(" ").collect();
-        let mut opponent_move: Move = Move::Rock;
-        let mut player_move: Move = Move::Rock;
+        let mut opponent_move: Option<Move> = None;
+        let mut player_move: Option<Move> = None;
 
         if round[0].chars().as_str() == "A" {
-            opponent_move = Move::Rock;
+            opponent_move = Some(Move::Rock);
         } else if round[0].chars().as_str() == "B" {
-            opponent_move = Move::Paper;
+            opponent_move = Some(Move::Paper);
         } else if round[0].chars().as_str() == "C" {
-            opponent_move = Move::Scissors;
+            opponent_move = Some(Move::Scissors);
         }
 
         if round[1].chars().as_str() == "X" {
-            player_move = Move::Rock;
+            player_move = Some(Move::Rock);
         } else if round[1].chars().as_str() == "Y" {
-            player_move = Move::Paper;
+            player_move = Some(Move::Paper);
         } else if round[1].chars().as_str() == "Z" {
-            player_move = Move::Scissors;
+            player_move = Some(Move::Scissors);
         }
 
-        rounds.push(Round {
-            player_move,
-            opponent_move,
-            outcome: Outcome::Lose
-        });
+        let r = Round {
+            player_move: match player_move {
+                Some(game_move) => game_move,
+                None => panic!("Move not determined for player")
+            },
+            opponent_move: match opponent_move {
+                Some(game_move) => game_move,
+                None => panic!("Move not determined for opponent")
+            }
+        };
+
+        rounds.push(r);
     }
 
     let mut score: u32 = 0;
