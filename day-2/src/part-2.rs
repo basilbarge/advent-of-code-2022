@@ -1,12 +1,18 @@
-const ROCK: u32 = 1;
-const PAPER: u32 = 2;
-const SCISSORS: u32 = 3;
-const LOST: u32 = 0;
-const DRAW: u32 = 3;
-const WIN: u32 = 6;
+fn main() {
 
-impl Round {
+    let playbook: Vec<&str> = include_str!("./input.txt").lines().collect();
 
+    let mut entries: Vec<char> = Vec::new();
+
+    for play in playbook {
+        play.split_whitespace().for_each(|set| {
+            entries.push(set.chars().last().unwrap());
+        })
+    }
+
+    for entry in entries {
+        println!("{entry}");
+    }
 }
 
 enum Move {
@@ -62,12 +68,3 @@ impl Outcome {
     }
 }
 
-fn main() {
-
-    let playbook: Vec<&str> = include_str!("./input.txt").lines().collect();
-
-
-    
-
-
-}
