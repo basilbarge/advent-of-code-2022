@@ -1,0 +1,1 @@
+/home/basilbarge/Documents/Projects/advent-of-code-2022/day-3/target/debug/day-3: /home/basilbarge/Documents/Projects/advent-of-code-2022/day-3/src/input.txt /home/basilbarge/Documents/Projects/advent-of-code-2022/day-3/src/main.rs
