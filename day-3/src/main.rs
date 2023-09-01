@@ -5,7 +5,7 @@ fn main() {
     
     let mut rucksack_by_compartment: Vec<(&str, &str)> = Vec::new();
     
-    for rucksack in rucksacks {
+    for rucksack in &rucksacks {
         rucksack_by_compartment.push(rucksack.split_at(rucksack.len() / 2));
     }
 
@@ -44,5 +44,33 @@ fn main() {
     }
 
     println!("Priority sum is {sum}");
+
+    let mut elf_group: Vec<(&str, &str, &str)> = Vec::new();
+
+    for (i, rucksack) in rucksacks.iter().enumerate().step_by(3) {
+        elf_group.push((rucksack, rucksacks[i + 1], rucksacks[i + 2]));
+    }
+
+    let mut first_matches:Matches<'_, char> = 'a';
+
+    for rucksack in &elf_group {
+        for item in rucksack.0.chars() {
+            first_matches = rucksack.1.matches(item);
+        }
+    }
+    
+    let mut final_match = Vec::new();
+
+    for rucksack in elf_group {
+        for item_match in first_matches {
+            match rucksack.2.matches(item_match).last() {
+                Some(matched_item) => {
+                    final_match.push(matched_item);
+                    break;
+                },
+                None => continue,
+            }
+        }
+    }
 
 }
