@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 fn main() {
     let input = include_str!("./input-test.txt");
 
@@ -70,13 +68,14 @@ fn main() {
             for item in rucksack.2.chars() {
                 match matched.matches(item).last() {
                     Some(matched_item) => {
-                        println!("Second pass: {matched_item}");
+                        println!("Second pass: {}, {}", rucksack.2, matched_item);
                         final_matches.push(matched_item);
                         break;
                     },
                     None => continue,
                 }
             }
+            break;
         }
     }
 
