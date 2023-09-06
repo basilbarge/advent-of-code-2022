@@ -9,28 +9,16 @@ fn main() {
         rucksack_by_compartment.push(rucksack.split_at(rucksack.len() / 2));
     }
 
-    let mut matches: Vec<&str> = Vec::new();
+    let mut matches: Vec<Vec<&str>> = Vec::new();
 
     for rucksack in &rucksack_by_compartment {
         matches.push(find_match(rucksack.0, rucksack.1));
     }
-    //for rucksack in rucksack_by_compartment {
-    //    for item in rucksack.0.chars() {
-    //        match rucksack.1.matches(item).last() {
-    //            Some(matched_item) => {
-    //                matches.push(matched_item);
-    //                break;
-    //            },
-    //            None => continue,
-    //        }
-    //    }
-    //}
-
 
     let mut bytes: Vec<u8> = Vec::new();
 
     for matched in &matches {
-        bytes.push(calculate_bytes(matched));
+        bytes.push(calculate_bytes(matched.first().unwrap()));
     }
 
     let mut sum: u32 = 0;
@@ -44,6 +32,33 @@ fn main() {
 
     for (i, rucksack) in rucksacks.iter().enumerate().step_by(3) {
         elf_group.push((rucksack, rucksacks[i + 1], rucksacks[i + 2]));
+    }
+
+    let mut matches: Vec<&str> = Vec::new();
+
+    for rucksack in &elf_group {
+        let first_matches = find_match(rucksack.0, rucksack.1);
+
+        for matched in first_matches {
+            match rucksack.2.matches(matched).last() {
+                Some(matched_item) => {
+                    matches.push(matched_item);
+                    break;
+                },
+                None => continue,
+            }
+        }
+    }
+
+    let mut bytes: Vec<u8> = Vec::new();
+
+    for matched in &matches {
+        bytes.push(calculate_bytes(matched));
+    }
+
+    let mut sum: u32 = 0;
+    for byte in bytes {
+        sum += calculate_priority_from_byte(byte);
     }
 
 
@@ -68,13 +83,13 @@ fn calculate_priority_from_byte(byte: u8) -> u32 {
     }
 }
 
-fn find_match<'a>(matched_string: &'a str, searched_string: &str)  -> &'a str {
+fn find_match<'a>(matched_string: &'a str, searched_string: &str)  -> Vec<&'a str> {
+    let mut matches = Vec::new();
     for letter in searched_string.chars() {
         match matched_string.matches(letter).last() {
-            Some(matched_letter) => return matched_letter,
+            Some(matched_letter) => matches.push(matched_letter),
             None => continue,
         }
     }
-
-    "Fail"
+    matches
 }
